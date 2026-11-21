@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>مراجعة المحتوى | دارك</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    body { min-height: 100vh; padding: 48px 0; background: #f5f3ed; }
+    .admin-shell { max-width: 900px; }
+    .admin-head { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:28px; }
+    .admin-head h1 { margin:0; color:#173c2d; }
+    .admin-auth,.pending-card { padding:24px; border:1px solid #dde1dc; border-radius:5px; background:white; }
+    .admin-auth { display:flex; gap:10px; }
+    .admin-auth input { min-width:0; flex:1; padding:10px 12px; border:1px solid #dde1dc; border-radius:3px; }
+    .admin-auth button,.approve-button,.reject-button,.admin-tab { padding:10px 18px; border:0; border-radius:3px; background:#173c2d; color:white; font-weight:700; }
+    .admin-tabs { display:flex; gap:8px; margin-top:22px; }
+    .admin-tab { background:#e9eee9; color:#173c2d; }
+    .admin-tab.active { background:#173c2d; color:white; }
+    .pending-list { display:grid; gap:12px; margin-top:18px; }
+    .pending-card { display:grid; grid-template-columns:1fr auto; align-items:center; gap:16px; }
+    .pending-card h2 { margin:0 0 5px; font-size:19px; }
+    .pending-card p { margin:5px 0; color:#6d756f; }
+    .pending-images { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+    .pending-images img { width:80px; height:65px; border-radius:3px; object-fit:cover; }
+    .pending-actions { display:flex; flex-direction:column; gap:7px; }
+    .reject-button { background:#8d3b3b; }
+    .admin-status { min-height:24px; color:#173c2d; }
+    .queue-status { min-height:20px; color:#6d756f; }
+    @media(max-width:600px) {
+      .admin-auth,.pending-card { grid-template-columns:1fr; }
+      .pending-actions { flex-direction:row; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container admin-shell">
+    <div class="admin-head">
+      <a class="brand footer-brand" href="./"><span class="brand-icon"><svg viewBox="0 0 40 40"><path d="M7 18.5 20 8l13 10.5v13H23v-9h-6v9H7z"/></svg></span><span><strong>دارك</strong><small>إدارة المحتوى</small></span></a>
+      <a href="./">العودة للموقع</a>
+    </div>
+    <h1>مراجعة المحتوى</h1>
+    <p>راجع بيانات الإعلانات والصور والتعليقات قبل ظهورها للزوار.</p>
+    <form class="admin-auth" id="admin-auth">
+      <input id="admin-key" type="password" autocomplete="current-password" placeholder="مفتاح الإدارة" required>
+      <button type="submit">دخول لوحة الإدارة</button>
+    </form>
+    <p class="admin-status" id="admin-status" role="status"></p>
+    <div class="admin-tabs" id="admin-tabs" hidden>
+      <button class="admin-tab active" type="button" data-admin-panel="listings">الإعلانات</button>
+      <button class="admin-tab" type="button" data-admin-panel="comments">التعليقات</button>
+      <button class="admin-tab" type="button" id="admin-logout">تسجيل الخروج</button>
+    </div>
+    <section class="admin-panel" id="listings-panel" hidden>
+      <p class="queue-status" id="listings-status" role="status"></p>
+      <div class="pending-list" id="pending-listings"></div>
+    </section>
+    <section class="admin-panel" id="comments-panel" hidden>
+      <p class="queue-status" id="comments-status" role="status"></p>
+      <div class="pending-list" id="pending-comments"></div>
+    </section>
+  </main>
+  <script>
+    const authForm = document.querySelector("#admin-auth");
+    const keyInput = document.querySelector("#admin-key");
+    const status = document.querySelector("#admin-status");
+    const tabs = document.querySelector("#admin-tabs");
+    const listingPanel = document.querySelector("#listings-panel");
+    const commentsPanel = document.querySelector("#comments-panel");
+    let adminKey = "";
+    keyInput.value = "";
+
+    async function request(url, options = {}) {
+      const response = await fetch(url, {
+        ...options,
+        headers: { "Content-Type": "application/json", "X-Admin-Key": adminKey, ...options.headers }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "تعذر تنفيذ الطلب.");
+      return data;
+    }
+
+    function actionButton(label, className, handler) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = className;
+      button.textContent = label;
+      button.addEventListener("click", handler);
+      return button;
+    }
+
+    async function loadListings() {
+      const list = document.querySelector("#pending-listings");
+      const message = document.querySelector("#listings-status");
+      message.textContent = "جارٍ تحميل الإعلانات…";
+      try {
+        const data = await request("/api/admin/listings");
+        list.replaceChildren();
+        message.textContent = data.items.length ? `${data.items.length} إعلان بانتظار المراجعة.` : "لا توجد إعلانات معلقة.";
+        for (const item of data.items) {
+          const card = document.createElement("article");
+          card.className = "pending-card";
+          const details = document.createElement("div");
+          const title = document.createElement("h2");
+          title.textContent = item.title;
+          const summary = document.createElement("p");
+          summary.textContent = `${item.type} · ${item.location} · ${Number(item.price).toLocaleString("ar-DZ")} دج · ${item.phone}`;
+          const description = document.createElement("p");
+          description.textContent = item.description || "لا توجد تفاصيل إضافية.";
+          details.append(title, summary, description);
+          if (item.images.length) {
+            const images = document.createElement("div");
+            images.className = "pending-images";
+            item.images.forEach((source) => {
+              const image = document.createElement("img");
+              image.src = source;
+              image.alt = "صورة مرفقة بالإعلان";
+              images.append(image);
+            });
+            details.append(images);
+          }
+          const actions = document.createElement("div");
+          actions.className = "pending-actions";
+          actions.append(actionButton("موافقة ونشر", "approve-button", async (event) => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+              await request(`/api/admin/listings/${item.id}/approve`, { method: "POST" });
+              card.remove();
+              message.textContent = "تم نشر الإعلان.";
+              if (!list.children.length) message.textContent = "تمت مراجعة جميع الإعلانات.";
+            } catch (error) {
+              button.disabled = false;
+              message.textContent = error.message;
+            }
+          }));
+          card.append(details, actions);
+          list.append(card);
+        }
+      } catch (error) {
+        list.replaceChildren();
+        message.textContent = error.message;
+      }
+    }
+
+    async function loadComments() {
+      const list = document.querySelector("#pending-comments");
+      const message = document.querySelector("#comments-status");
+      message.textContent = "جارٍ تحميل التعليقات…";
+      try {
+        const data = await request("/api/admin/comments");
+        list.replaceChildren();
+        message.textContent = data.items.length ? `${data.items.length} تعليق بانتظار المراجعة.` : "لا توجد تعليقات معلقة.";
+        for (const item of data.items) {
+          const card = document.createElement("article");
+          card.className = "pending-card";
+          const details = document.createElement("div");
+          const title = document.createElement("h2");
+          title.textContent = `${item.author} · ${item.listing_title}`;
+          const body = document.createElement("p");
+          body.textContent = item.body;
+          details.append(title, body);
+          const actions = document.createElement("div");
+          actions.className = "pending-actions";
+          actions.append(actionButton("موافقة", "approve-button", async (event) => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+              await request(`/api/admin/comments/${item.id}/approve`, { method: "POST" });
+              card.remove();
+              message.textContent = list.children.length ? "تم نشر التعليق." : "تمت مراجعة جميع التعليقات.";
+            } catch (error) {
+              button.disabled = false;
+              message.textContent = error.message;
+            }
+          }));
+          actions.append(actionButton("رفض", "reject-button", async (event) => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+              await request(`/api/admin/comments/${item.id}`, { method: "DELETE" });
+              card.remove();
+              message.textContent = list.children.length ? "تم حذف التعليق." : "تمت مراجعة جميع التعليقات.";
+            } catch (error) {
+              button.disabled = false;
+              message.textContent = error.message;
+            }
+          }));
+          card.append(details, actions);
+          list.append(card);
+        }
+      } catch (error) {
+        list.replaceChildren();
+        message.textContent = error.message;
+      }
+    }
+
+    function showPanel(name) {
+      listingPanel.hidden = name !== "listings";
+      commentsPanel.hidden = name !== "comments";
+      document.querySelectorAll("[data-admin-panel]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.adminPanel === name);
+      });
+    }
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      adminKey = keyInput.value;
+      status.textContent = "جارٍ التحقق…";
+      try {
+        await request("/api/admin/listings");
+        status.textContent = "";
+        tabs.hidden = false;
+        showPanel("listings");
+        await Promise.all([loadListings(), loadComments()]);
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+
+    document.querySelectorAll("[data-admin-panel]").forEach((button) => {
+      button.addEventListener("click", () => showPanel(button.dataset.adminPanel));
+    });
+    document.querySelector("#admin-logout").addEventListener("click", () => {
+      adminKey = "";
+      keyInput.value = "";
+      tabs.hidden = true;
+      listingPanel.hidden = true;
+      commentsPanel.hidden = true;
+      document.querySelector("#pending-listings").replaceChildren();
+      document.querySelector("#pending-comments").replaceChildren();
+      status.textContent = "تم تسجيل الخروج من لوحة الإدارة.";
+      keyInput.focus();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+real_estate.sqlite3
+real_estate.sqlite3-shm
+real_estate.sqlite3-wal
+uploads/
