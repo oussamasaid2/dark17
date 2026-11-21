@@ -12,280 +12,55 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="container nav-shell">
-      <a class="brand" href="#top" aria-label="دارك العقارية">
-        <span class="brand-icon">
-          <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 18.5 20 8l13 10.5v13H23v-9h-6v9H7z"/><path d="M12 13V8h5v1"/></svg>
-        </span>
-        <span><strong>دارك</strong><small>عقارات الجلفة</small></span>
-      </a>
-
-      <nav class="main-nav" id="main-nav" aria-label="التنقل الرئيسي">
-        <a class="active" href="#top">الرئيسية</a>
-        <a href="#properties">العقارات</a>
-        <a href="#locations">المناطق</a>
-        <a href="#about">عن دارك</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="icon-button" id="favorites-button" type="button" aria-label="المفضلة">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
-          <span class="favorite-count" id="favorite-count">0</span>
-        </button>
-        <button class="account-button" type="button" id="account-button">تسجيل الدخول</button>
-        <button class="sell-button" type="button" data-open-listing>أضف عقارك</button>
-        <button class="menu-button" type="button" id="menu-button" aria-expanded="false" aria-controls="main-nav">☰</button>
-      </div>
-    </div>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="hero-shade"></div>
-      <div class="container hero-content">
-        <p class="hero-kicker">الوجهة الأولى للعقارات في الجلفة</p>
-        <h1>اعثر على عقارك<br><span>في قلب الجلفة</span></h1>
-        <p class="hero-description">شقق، فيلات، أراضٍ ومحلات بكل دوائر وبلديات ولاية الجلفة.</p>
-
-        <form class="search-panel" id="search-form">
-          <div class="search-tabs" role="tablist">
-            <button type="button" class="search-tab active" data-purpose="sale">للبيع</button>
-            <button type="button" class="search-tab" data-purpose="rent">للإيجار</button>
-          </div>
-          <div class="search-fields">
-            <label>
-              <span>نوع العقار</span>
-              <select id="property-type">
-                <option value="">كل العقارات</option>
-                <option value="شقة">شقة</option>
-                <option value="فيلا">فيلا</option>
-                <option value="بيت">بيت</option>
-                <option value="أرض">أرض</option>
-                <option value="محل">محل تجاري</option>
-              </select>
-            </label>
-            <label>
-              <span>المنطقة</span>
-              <select id="location-filter">
-                <option value="">كل الدوائر والبلديات</option>
-                <optgroup label="دوائر الجلفة">
-                  <option>دائرة الجلفة</option><option>دائرة عين وسارة</option><option>دائرة البيرين</option>
-                  <option>دائرة سيدي لعجال</option><option>دائرة حد الصحاري</option><option>دائرة حاسي بحبح</option>
-                  <option>دائرة دار الشيوخ</option><option>دائرة الشارف</option><option>دائرة الإدريسية</option>
-                  <option>دائرة عين الإبل</option><option>دائرة مسعد</option><option>دائرة فيض البطمة</option>
-                </optgroup>
-                <optgroup label="بلديات الولاية (36)">
-                  <option>الجلفة</option><option>عين وسارة</option><option>القرنيني</option><option>البيرين</option>
-                  <option>بنهار</option><option>سيدي لعجال</option><option>الخميس</option><option>حاسي فدول</option>
-                  <option>حد الصحاري</option><option>بويرة الأحداب</option><option>عين أفقه</option><option>حاسي بحبح</option>
-                  <option>الزعفران</option><option>حاسي العش</option><option>عين معبد</option><option>دار الشيوخ</option>
-                  <option>مليليحة</option><option>سيدي بايزيد</option><option>الشارف</option><option>القديد</option>
-                  <option>بن يعقوب</option><option>الإدريسية</option><option>الدويس</option><option>عين الشهداء</option>
-                  <option>عين الإبل</option><option>مجبارة</option><option>تعضميت</option><option>زكار</option>
-                  <option>مسعد</option><option>دلدول</option><option>سلمانة</option><option>سد رحال</option>
-                  <option>قطارة</option><option>فيض البطمة</option><option>عمورة</option><option>أم العظام</option>
-                </optgroup>
-              </select>
-            </label>
-            <label>
-              <span>السعر الأقصى</span>
-              <select id="price-filter">
-                <option value="">بدون حد</option>
-                <option value="5000000">5 مليون دج</option>
-                <option value="10000000">10 ملايين دج</option>
-                <option value="15000000">15 مليون دج</option>
-                <option value="30000000">30 مليون دج</option>
-              </select>
-            </label>
-            <label>
-              <span>عدد الغرف الأدنى</span>
-              <select id="rooms-filter">
-                <option value="">أي عدد</option>
-                <option value="1">غرفة واحدة فأكثر</option>
-                <option value="2">غرفتان فأكثر</option>
-                <option value="3">3 غرف فأكثر</option>
-                <option value="4">4 غرف فأكثر</option>
-              </select>
-            </label>
-            <button class="search-submit" type="submit">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-              ابحث
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <section class="stats-strip" aria-label="إحصاءات الموقع">
-      <div class="container stats-grid">
-        <div><strong>06</strong><span>نماذج إعلانية للتجربة</span></div>
-        <div><strong>36</strong><span>بلدية تغطيها الخدمة</span></div>
-        <div><strong>12</strong><span>دائرة في الولاية</span></div>
-        <div><strong>قبل النشر</strong><span>مراجعة كل إعلان جديد</span></div>
-      </div>
-    </section>
-
-    <section class="section properties-section" id="properties">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">اختيارات مميزة</p>
-            <h2>عقارات مختارة لك</h2>
-          </div>
-          <div class="property-controls">
-            <span class="results-count" id="results-count" aria-live="polite">— عقار</span>
-            <label class="sort-control">ترتيب حسب
-              <select id="sort-select" aria-label="ترتيب العقارات">
-                <option value="newest">الأحدث</option>
-                <option value="price-asc">السعر: الأقل أولًا</option>
-                <option value="price-desc">السعر: الأعلى أولًا</option>
-                <option value="area-desc">المساحة: الأكبر أولًا</option>
-              </select>
-            </label>
-            <button class="view-all" type="button" id="view-all">عرض الكل ←</button>
-          </div>
-        </div>
-        <div class="property-grid" id="property-grid"></div>
-        <p class="form-status properties-status" id="properties-status" role="status"></p>
-      </div>
-    </section>
-
-    <section class="section location-section" id="locations">
-      <div class="container">
-        <div class="section-heading">
-          <div><p class="eyebrow">تصفح حسب المنطقة</p><h2>كل أنحاء ولاية الجلفة بين يديك</h2></div>
-        </div>
-        <div class="location-grid">
-          <button class="location-card location-djelfa" type="button" data-location="الجلفة"><span>الجلفة</span><small>الدائرة والبلدية</small></button>
-          <button class="location-card location-messaad" type="button" data-location="مسعد"><span>مسعد</span><small>العاصمة الجافة</small></button>
-          <button class="location-card location-ainoussera" type="button" data-location="عين وسارة"><span>عين وسارة</span><small>دائرة وبلدية</small></button>
-          <button class="location-card location-hassi" type="button" data-location="حاسي بحبح"><span>حاسي بحبح</span><small>دائرة وبلدية</small></button>
-        </div>
-        <div class="municipality-list" id="municipality-list"></div>
-      </div>
-    </section>
-
-    <section class="sell-cta" id="about">
-      <div class="container sell-cta-inner">
-        <div>
-          <p class="eyebrow">بدّل عقارًا قديمًا بعقار جديد؟</p>
-          <h2>بع عقارك بثقة<br>ونصل إليه المشتري المناسب</h2>
-        </div>
-        <div class="sell-cta-copy">
-          <p>نساعدك في نشر إعلان واضح، التحقق من المعلومات، والتفاوض بشفافية مقابل عمولة متفق عليها عند إتمام البيع.</p>
-          <button class="cta-button" type="button" data-open-listing>أضف عقارك الآن ←</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <a class="brand footer-brand" href="#top">
-          <span class="brand-icon"><svg viewBox="0 0 40 40"><path d="M7 18.5 20 8l13 10.5v13H23v-9h-6v9H7z"/></svg></span>
-          <span><strong>دارك</strong><small>عقارات الجلفة</small></span>
-        </a>
-        <p>منصة عقارية جزائرية حديثة لخدمة سكان ولاية الجلفة وشرق الهضاب العليا.</p>
-      </div>
-      <div><h3>استكشف</h3><a href="#properties">العقارات المعروضة</a><a href="#locations">دوائر وبلديات الجلفة</a><a href="#about">بيع عقارك</a></div>
-      <div>
-        <h3>تواصل وإعلانات</h3>
-        <a href="tel:+213778249349" dir="ltr">0778 24 93 49</a>
-        <a href="https://wa.me/213778249349" target="_blank" rel="noopener noreferrer">راسلنا على واتساب</a>
-        <a href="https://web.facebook.com/oussama.sd.545301/" target="_blank" rel="noopener noreferrer">صفحتنا على فيسبوك</a>
-        <a href="#about">أرسل بيانات عقارك عبر النموذج</a>
-        <span>الجلفة، الجزائر</span>
-      </div>
-    </div>
-    <div class="container footer-bottom"><span>© 2026 دارك. جميع الحقوق محفوظة.</span><span>السياسة والخصوصية · الشروط والأحكام</span></div>
-  </footer>
-
-  <dialog class="modal" id="listing-modal">
+  <!-- AUTH_UI_START -->
+  <dialog class="modal auth-modal" id="auth-modal" aria-labelledby="auth-title">
     <form method="dialog" class="modal-close-wrap"><button class="modal-close" aria-label="إغلاق">×</button></form>
-    <div class="modal-body">
-      <p class="eyebrow">أضف إعلانًا جديدًا</p>
-      <h2>عرض عقارك للبيع أو الإيجار</h2>
-      <form id="listing-form" class="listing-form" enctype="multipart/form-data">
-        <label><span>عنوان الإعلان</span><input name="title" maxlength="160" required placeholder="مثال: شقة حديثة قرب وسط المدينة"></label>
-        <div class="form-grid">
-          <label><span>الولاية</span><input value="الجلفة" disabled></label>
-          <label><span>البلدية</span><select name="location" id="listing-location" required><option value="">اختر البلدية</option></select></label>
-        </div>
-        <div class="form-grid">
-          <label><span>نوع العقار</span><select name="type" required><option>شقة</option><option>فيلا</option><option>بيت</option><option>أرض</option><option>محل</option></select></label>
-          <label><span>الغرض</span><select name="purpose" required><option value="sale">للبيع</option><option value="rent">للإيجار</option></select></label>
-        </div>
-        <div class="form-grid">
-          <label><span>السعر بالدينار</span><input name="price" type="number" min="0" required placeholder="14500000"></label>
-          <label><span>رقم الهاتف</span><input name="phone" required inputmode="tel" placeholder="0550 00 00 00"></label>
-        </div>
-        <div class="form-grid">
-          <label><span>المساحة بالمتر المربع</span><input name="area" type="number" min="1" placeholder="اختياري"></label>
-          <label><span>عدد الغرف</span><input name="rooms" type="number" min="1" placeholder="اختياري"></label>
-        </div>
-        <label class="upload-field">
-          <span>صور العقار <small>حتى 8 صور، بحد أقصى 4 ميغابايت للصورة</small></span>
-          <input id="listing-images" name="images" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-          <span class="upload-hint">اختر صورًا واضحة بصيغة JPG أو PNG أو WEBP</span>
-        </label>
-        <div class="image-preview" id="image-preview" aria-live="polite"></div>
-        <label><span>تفاصيل العقار</span><textarea name="description" rows="4" maxlength="5000" placeholder="صف حالة العقار، التجهيزات، الحي وأي تفاصيل مهمة"></textarea></label>
-        <label class="terms-check"><input name="accept_terms" type="checkbox" required><span>أؤكد صحة المعلومات وأوافق على مراجعة الإعلان قبل نشره.</span></label>
-        <button class="cta-button submit-listing" type="submit">إرسال للمراجعة</button>
-        <p class="form-status" id="listing-status" role="status"></p>
-      </form>
-    </div>
-  </dialog>
-
-  <dialog class="modal auth-modal" id="auth-modal">
-    <form method="dialog" class="modal-close-wrap"><button class="modal-close" aria-label="إغلاق">×</button></form>
-    <div class="modal-body">
+    <div class="modal-body auth-modal-body">
+      <div class="auth-brand" aria-hidden="true"><span>د</span></div>
       <p class="eyebrow">حسابك في دارك</p>
       <h2 id="auth-title">مرحبًا بعودتك</h2>
       <p class="auth-intro">سجّل الدخول لمتابعة إعلاناتك والتعليق على العقارات.</p>
+
       <div class="auth-tabs" role="tablist" aria-label="الدخول أو إنشاء حساب">
-        <button type="button" class="auth-tab active" data-auth-view="login">تسجيل الدخول</button>
-        <button type="button" class="auth-tab" data-auth-view="register">إنشاء حساب</button>
+        <button type="button" class="auth-tab active" id="login-tab" role="tab" aria-selected="true" aria-controls="login-form" data-auth-view="login">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" id="register-tab" role="tab" aria-selected="false" aria-controls="register-form" data-auth-view="register">إنشاء حساب</button>
       </div>
-      <form id="login-form" class="listing-form auth-form">
-        <label><span>رقم الهاتف</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="07XX XX XX XX"></label>
-        <label><span>كلمة المرور</span><input name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="8 أحرف على الأقل"></label>
-        <button class="cta-button" type="submit">دخول آمن</button>
+
+      <form id="login-form" class="listing-form auth-form" novalidate aria-labelledby="login-tab">
+        <label><span>رقم الهاتف</span>
+          <input class="auth-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="32" dir="ltr" placeholder="07XX XX XX XX">
+        </label>
+        <label><span>كلمة المرور</span>
+          <span class="password-field">
+            <input name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="8 أحرف على الأقل">
+            <button type="button" class="password-toggle" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+          </span>
+        </label>
+        <button class="cta-button auth-submit" type="submit"><span>دخول آمن</span></button>
         <a class="forgot-password" href="https://wa.me/213778249349" target="_blank" rel="noopener noreferrer">نسيت كلمة المرور؟ تواصل معنا على واتساب</a>
       </form>
-      <form id="register-form" class="listing-form auth-form" hidden>
-        <label><span>الاسم الكامل</span><input name="name" autocomplete="name" maxlength="100" required placeholder="اكتب اسمك الكامل"></label>
-        <label><span>رقم الهاتف</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="07XX XX XX XX"></label>
-        <label><span>كلمة المرور</span><input name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="8 أحرف على الأقل"></label>
-        <button class="cta-button" type="submit">إنشاء الحساب</button>
+
+      <form id="register-form" class="listing-form auth-form" novalidate hidden aria-labelledby="register-tab">
+        <label><span>الاسم الكامل</span>
+          <input name="name" autocomplete="name" maxlength="100" required placeholder="اكتب اسمك الكامل">
+        </label>
+        <label><span>رقم الهاتف</span>
+          <input class="auth-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="32" dir="ltr" placeholder="07XX XX XX XX">
+        </label>
+        <label><span>كلمة المرور</span>
+          <span class="password-field">
+            <input name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="8 أحرف على الأقل">
+            <button type="button" class="password-toggle" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+          </span>
+        </label>
+        <button class="cta-button auth-submit" type="submit"><span>إنشاء الحساب</span></button>
       </form>
-      <p class="form-status" id="auth-status" role="status"></p>
-      <p class="auth-security">نحفظ كلمة المرور مشفّرة ولا نعرضها لأحد.</p>
+
+      <p class="form-status auth-status" id="auth-status" role="status" aria-live="polite"></p>
+      <p class="auth-security"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z"/></svg> نحفظ كلمة المرور مشفّرة ولا نعرضها لأحد.</p>
     </div>
   </dialog>
-
-  <dialog class="modal detail-modal" id="detail-modal">
-    <button class="modal-close detail-close" aria-label="إغلاق">×</button>
-    <div id="detail-content"></div>
-    <section class="comments-section">
-      <div class="comments-heading">
-        <div><p class="eyebrow">آراء المجتمع</p><h3>التعليقات</h3></div>
-        <span id="comment-count">0 تعليق</span>
-      </div>
-      <div class="comments-list" id="comments-list"></div>
-      <form class="comment-form" id="comment-form">
-        <label for="comment-body">أضف تعليقًا أو استفسارًا</label>
-        <textarea id="comment-body" name="body" rows="3" maxlength="2000" required placeholder="اكتب تعليقك باحترام ووضوح…"></textarea>
-        <div class="comment-form-footer">
-          <p class="form-status" id="comment-status" role="status"></p>
-          <button class="cta-button" type="submit">إرسال التعليق</button>
-        </div>
-      </form>
-    </section>
-  </dialog>
-
+  <!-- AUTH_UI_END -->
   <script src="./script.js"></script>
 </body>
 </html>
